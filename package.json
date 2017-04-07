@@ -1,0 +1,33 @@
+{
+  "name": "dashboard",
+  "version": "1.0.0",
+  "main": "build/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Antonio Alfonso",
+  "license": "ISC",
+  "dependencies": {
+    "firmata": "^0.16.0",
+    "firmata-party": "^1.5.4",
+    "serialport": "^4.0.7",
+    "socket.io": "^1.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.12",
+    "gulp": "^3.9.1",
+    "gulp-file-include": "^1.1.0",
+    "gulp-typescript": "^3.1.6",
+    "typescript": "^2.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AntonioAlfonso/Dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AntonioAlfonso/Dashboard/issues"
+  },
+  "homepage": "https://github.com/AntonioAlfonso/Dashboard#readme",
+  "description": ""
+}

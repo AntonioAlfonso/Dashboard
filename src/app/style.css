@@ -1,0 +1,111 @@
+    body {
+      background-color: #000;
+    }
+    svg {
+      height: 100%;
+      width:  100%;
+      position: relative;
+      top: 60px;
+    }
+    #path210-3-3 {
+      fill: none;
+      stroke: #fffc00;
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 0;
+      animation-duration: 4s;
+    }
+    #path4814-3-5-5-6 {
+      stroke-dasharray: 364;
+      stroke-dashoffset: 364;
+      animation-duration: 3s;
+    }
+    #path5209 {
+      stroke-dasharray: 94;
+      stroke-dashoffset: 0;
+      animation-duration: 3s;
+    }
+
+    #layer1, #layer5, #layer6, #layer12, #layer16, #path4569{
+      opacity: 0;
+      animation-duration: 2s;
+    }
+    #path4487-3-56-0, #path4493-3-6-2, #path4487-3-5-5-9 {
+      animation-duration: 3s;
+      animation-timing-function: ease;
+    }
+    /**********************************************\
+    *               SELFT CONTROL                  *
+    \**********************************************/
+    @keyframes start-opacity {
+      from {
+        opacity: 0;
+      } to {
+        opacity: 1;
+      }
+    }
+    @keyframes start1 {
+      from {
+        stroke-dasharray: 1100;
+        stroke-dashoffset: 2000;
+      } to {
+        stroke-dasharray: 2000;
+        stroke-dashoffset: 0;
+      }
+    }
+    @keyframes start2 {
+      from {
+        stroke-dasharray: 242;
+        stroke-dashoffset: 0;
+      } to {
+        stroke-dasharray: 242;
+        stroke-dashoffset: 242;
+      }
+    }
+    @keyframes speed {
+      0% {
+        stroke: #0f0;
+        stroke-dashoffset: 364;
+      } 40% {
+        stroke: #ff0;
+      } 70% {
+        stroke: #f00;
+      } 100% {
+        stroke-dashoffset: 0;
+      }
+    }
+    @keyframes battery {
+      0% {
+        stroke: #0f0;
+        stroke-dashoffset: 0;
+      } 40% {
+        stroke: #ff0;
+      } 70% {
+        stroke: #f00;
+      } 100% {
+        stroke-dashoffset: 94;
+      }
+    }
+    @keyframes drs {
+      0% {
+        fill: #393939;
+      }
+      10% {
+        fill: #f00;
+      }
+    }
+    @keyframes rollBar {
+      0% {
+        fill: #393939;
+      }
+      10% {
+        fill: #0f0;
+      }
+    }
+    @keyframes glv {
+      0% {
+        fill: #393939;
+      }
+      10% {
+        fill: #ff0;
+      }
+    }
