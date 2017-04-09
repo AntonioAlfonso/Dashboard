@@ -12,7 +12,7 @@ const folder = {
     dest : 'build/app/'
   },
   ts      : {
-    src  : 'src/*.ts',
+    src  : 'src/**/*.ts',
     dest : 'build/'
   }
 }
