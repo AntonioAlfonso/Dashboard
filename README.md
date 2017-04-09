@@ -12,3 +12,6 @@ This is the Dashboard of UninaCorse E-Team
     * ```firmata-party <BOARD> --debug```
     * ```node index.js```  
   * Open the browser and typing ```127.0.0.1:8127```
+
+###### Instructions for Build
+  * just run Gulp without parameters
