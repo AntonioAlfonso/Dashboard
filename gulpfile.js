@@ -1,18 +1,22 @@
-const gulp    = require('gulp');
-const include = require('gulp-file-include');
+const gulp       = require('gulp');
+const include    = require('gulp-file-include');
 const typescript = require('gulp-typescript');
 
 
 const folder = {
   include : {
-    html : 'src/app/*.html',
-    css  : 'src/app/*.css',
-    js   : 'src/app/*.js',
-    svg  : 'src/app/*.svg',
+    html : 'src/app/html/*.html',
+    css  : 'src/app/css/*.css',
+    js   : 'src/app/js/*.js',
+    svg  : 'src/app/img/*.svg',
     dest : 'build/app/'
   },
-  ts      : {
-    src  : 'src/**/*.ts',
+  tsApp  : {
+    src  : 'src/ts/*.ts',
+    dest : 'src/js/'
+  },
+  tsNode : {
+    src  : 'src/*.ts',
     dest : 'build/'
   }
 }
@@ -21,7 +25,8 @@ gulp.task('default', () => {
   gulp.watch(folder.include.html, ['include']);
   gulp.watch(folder.include.css,  ['include']);
   gulp.watch(folder.include.js,   ['include']);
-  gulp.watch(folder.ts.src,       ['compile']);
+  gulp.watch(folder.tsApp.src,    ['compile']);
+  gulp.watch(folder.tsNode.src,   ['compile']);
 });
 
 gulp.task('include', () => {

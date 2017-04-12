@@ -39,7 +39,7 @@ interface State {
 }
 
 interface StateChangeHandler {
-  (state: State): void;
+  (state: State, channel: string): void;
 }
 
 // Variable of state pin
@@ -50,29 +50,35 @@ var state: State = {
   rollBar      : false,
   glv          : false,
   // Bind a listener to the Change Event
-  onChange     : (handler: StateChangeHandler) => {
+  onChange     : (handler: StateChangeHandler, namespace: string) => {
     state.onChange.handlers.push(handler);
   },
   // Trigger the Change Event. Call it when you change the state
   triggerChange: () => {
+    let channel = 'state'; // default channel
+
     let toCheck: string[] = [
       'accelerator',
       'brake',
-      'power',
       'drs',
       'rollBar',
       'glv'
     ];
-
     toCheck.forEach((prop) => {
       if (state[prop] !== state.triggerChange.oldState[prop]) {
-        // console.log(`${prop} --> ${state[prop]}`);
-        //Update
+        console.log(`${prop} --> ${state[prop]}`);
+        // Update
         state.triggerChange.oldState[prop] = state[prop];
+
+        if (prop === 'accelerator' || prop === 'brake') {
+          channel = 'state';
+        } else {
+          channel = 'alert';
+        }
       }
     });
     state.onChange.handlers.forEach((handler: StateChangeHandler) => {
-      handler(state);
+      handler(state, channel);
     });
   }
 };
@@ -82,14 +88,24 @@ state.triggerChange.oldState = {};
 // Handler for Socket
 io.on('connection', (socket) => {
 
-  state.onChange((newState) => {
-    socket.emit('state', {
-      'accelerator' : newState.accelerator,
-      'brake'       : newState.brake,
-      'drs'         : newState.drs,
-      'rollBar'     : newState.rollBar,
-      'glv'         : newState.glv
-    });
+  state.onChange((newState, channel) => {  // handler function in state.triggerChange
+    let mess = {
+      state : () => {
+        io.emit('state', {
+        'accelerator' : newState.accelerator,
+        'brake'       : newState.brake,
+        })
+      },
+      alert : () => {
+        io.emit('alert', {
+          'drs'         : newState.drs,
+          'rollBar'     : newState.rollBar,
+          'glv'         : newState.glv
+        })
+      }
+    }
+    // Send the data
+    mess[channel]();
   });
 
 });
@@ -129,13 +145,14 @@ arduino.requestPort((error, port) => {
   let board = new arduino(port.comName, {samplingInterval : 50});
 
   board.on('ready', () => {
-    //Setup
+    // Setup
     board.pinMode(pin.accelerator, board.MODES.INPUT);
     board.pinMode(pin.brake,       board.MODES.INPUT);
     board.pinMode(pin.drs,         board.MODES.INPUT);
     board.pinMode(pin.rollBar,     board.MODES.INPUT);
     board.pinMode(pin.glv,         board.MODES.INPUT);
 
+    // Loop
     board.analogRead(pin.accelerator, (value) => {
       state.accelerator = value;
       state.triggerChange();
@@ -147,29 +164,17 @@ arduino.requestPort((error, port) => {
     });
 
     board.digitalRead(pin.drs, (value) => {
-      if (value == board.HIGH) {
-        state.drs = true;
-      } else {
-        state.drs = false;
-      }
+      state.drs = (value === board.HIGH);
       state.triggerChange();
     });
 
     board.digitalRead(pin.rollBar, (value) => {
-      if (value == board.HIGH) {
-        state.rollBar = true;
-      } else {
-        state.rollBar = false;
-      }
+      state.rollBar = (value === board.HIGH);
       state.triggerChange();
     });
 
     board.digitalRead(pin.glv, (value) => {
-      if (value == board.HIGH) {
-        state.glv = true;
-      } else {
-        state.glv = false;
-      }
+      state.glv = (value === board.HIGH);
       state.triggerChange();
     });
 

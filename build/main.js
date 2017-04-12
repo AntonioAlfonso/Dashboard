@@ -29,28 +29,34 @@ var state = {
     rollBar: false,
     glv: false,
     // Bind a listener to the Change Event
-    onChange: function (handler) {
+    onChange: function (handler, namespace) {
         state.onChange.handlers.push(handler);
     },
     // Trigger the Change Event. Call it when you change the state
     triggerChange: function () {
+        var channel = 'state'; // default channel
         var toCheck = [
             'accelerator',
             'brake',
-            'power',
             'drs',
             'rollBar',
             'glv'
         ];
         toCheck.forEach(function (prop) {
             if (state[prop] !== state.triggerChange.oldState[prop]) {
-                // console.log(`${prop} --> ${state[prop]}`);
-                //Update
+                console.log(prop + " --> " + state[prop]);
+                // Update
                 state.triggerChange.oldState[prop] = state[prop];
+                if (prop === 'accelerator' || prop === 'brake') {
+                    channel = 'state';
+                }
+                else {
+                    channel = 'alert';
+                }
             }
         });
         state.onChange.handlers.forEach(function (handler) {
-            handler(state);
+            handler(state, channel);
         });
     }
 };
@@ -58,14 +64,24 @@ state.onChange.handlers = [];
 state.triggerChange.oldState = {};
 // Handler for Socket
 io.on('connection', function (socket) {
-    state.onChange(function (newState) {
-        socket.emit('state', {
-            'accelerator': newState.accelerator,
-            'brake': newState.brake,
-            'drs': newState.drs,
-            'rollBar': newState.rollBar,
-            'glv': newState.glv
-        });
+    state.onChange(function (newState, channel) {
+        var mess = {
+            state: function () {
+                io.emit('state', {
+                    'accelerator': newState.accelerator,
+                    'brake': newState.brake
+                });
+            },
+            alert: function () {
+                io.emit('alert', {
+                    'drs': newState.drs,
+                    'rollBar': newState.rollBar,
+                    'glv': newState.glv
+                });
+            }
+        };
+        // Send the data
+        mess[channel]();
     });
 });
 // Test the Frontend part without an Arduino
@@ -97,12 +113,13 @@ arduino.requestPort(function (error, port) {
     // Request serial port name
     var board = new arduino(port.comName, { samplingInterval: 50 });
     board.on('ready', function () {
-        //Setup
+        // Setup
         board.pinMode(pin.accelerator, board.MODES.INPUT);
         board.pinMode(pin.brake, board.MODES.INPUT);
         board.pinMode(pin.drs, board.MODES.INPUT);
         board.pinMode(pin.rollBar, board.MODES.INPUT);
         board.pinMode(pin.glv, board.MODES.INPUT);
+        // Loop
         board.analogRead(pin.accelerator, function (value) {
             state.accelerator = value;
             state.triggerChange();
@@ -112,30 +129,15 @@ arduino.requestPort(function (error, port) {
             state.triggerChange();
         });
         board.digitalRead(pin.drs, function (value) {
-            if (value == board.HIGH) {
-                state.drs = true;
-            }
-            else {
-                state.drs = false;
-            }
+            state.drs = (value === board.HIGH);
             state.triggerChange();
         });
         board.digitalRead(pin.rollBar, function (value) {
-            if (value == board.HIGH) {
-                state.rollBar = true;
-            }
-            else {
-                state.rollBar = false;
-            }
+            state.rollBar = (value === board.HIGH);
             state.triggerChange();
         });
         board.digitalRead(pin.glv, function (value) {
-            if (value == board.HIGH) {
-                state.glv = true;
-            }
-            else {
-                state.glv = false;
-            }
+            state.glv = (value === board.HIGH);
             state.triggerChange();
         });
     });

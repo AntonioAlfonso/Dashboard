@@ -19,21 +19,11 @@ var toAnim1;
 var totDelay = 0;
 // initialize variables and status
 setTimeout(function () {
-    var id = document.getElementById;
+    function get(id) {
+        return document.getElementById(id);
+    }
     // Set DomElement reference
-    border = id('path210-3-3'),
-        borderLight = id('path4569'),
-        speedText = id('tspan6417'),
-        speed = id('path4814-3-5-5-6'),
-        battery = id('path5209'),
-        speedBack = id('layer1'),
-        display = id('layer5'),
-        batteryBack = id('layer6'),
-        background = id('layer12'),
-        light = id('layer16'),
-        drsLight = id('path4487-3-56-0'),
-        rollBarLight = id('path4493-3-6-2'),
-        glvLight = id('path4487-3-5-5-9');
+    var border = get('path210-3-3'), borderLight = get('path4569'), speedText = get('tspan6417'), speed = get('path4814-3-5-5-6'), battery = get('path5209'), speedBack = get('layer1'), display = get('layer5'), batteryBack = get('layer6'), background = get('layer12'), light = get('layer16'), drsLight = get('path4487-3-56-0'), rollBarLight = get('path4493-3-6-2'), glvLight = get('path4487-3-5-5-9');
     toAnimOpacity = [speedBack, display, batteryBack, background, light, borderLight];
     // The second element of the inner Array is the Css Animation name
     toAnim1 = [
@@ -59,6 +49,7 @@ setTimeout(function () {
     toAnim1.forEach(function (t) { t[0].style.animationName = t[1]; });
 }, totDelay += 1000);
 setTimeout(function () {
+    console.log(speed);
     speed.style.strokeDasharray = '364';
     speed.style.strokeDashoffset = '364';
     battery.style.strokeDasharray = '94';

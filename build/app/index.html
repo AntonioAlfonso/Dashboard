@@ -141,57 +141,63 @@
 
   </style>
   <script>
-    setTimeout(() => {
-  var border       = document.getElementById('path210-3-3'),
-      borderLight  = document.getElementById('path4569'),
-      speedText    = document.getElementById('tspan6417'),
-      speed        = document.getElementById('path4814-3-5-5-6'),
-      battery      = document.getElementById('path5209'),
-      speedBack    = document.getElementById('layer1'),
-      display      = document.getElementById('layer5'),
-      batteryBack  = document.getElementById('layer6'),
-      background   = document.getElementById('layer12'),
-      light        = document.getElementById('layer16'),
-      drsLight     = document.getElementById('path4487-3-56-0'),
-      rollBarLight = document.getElementById('path4493-3-6-2'),
-      glvLight     = document.getElementById('path4487-3-5-5-9');
-
-  border.style.animationName = 'start1';
-  speedText.innerHTML = 0;
-
-  setTimeout(() => {
-    speedBack.style.animationName   = 'start-opacity';
-    display.style.animationName     = 'start-opacity';
-    batteryBack.style.animationName = 'start-opacity';
-    background.style.animationName  = 'start-opacity';
-    light.style.animationName       = 'start-opacity';
-    borderLight.style.animationName = 'start-opacity';
-
-    setTimeout(() => {
-      speedBack.style.opacity   = 1;
-      display.style.opacity     = 1;
-      batteryBack.style.opacity = 1;
-      background.style.opacity  = 1;
-      light.style.opacity       = 1;
-      borderLight.style.opacity = 1;
-
-      setTimeout(() => {
-        speed.style.animationName        = 'speed';
-        battery.style.animationName      = 'battery';
-        drsLight.style.animationName     = 'drs';
-        rollBarLight.style.animationName = 'rollBar';
-        glvLight.style.animationName     = 'glv';
-
-        setTimeout(() => {
-          speed.style.strokeDasharray     = '364';
-          speed.style.strokeDashoffset    = '364';
-          battery.style.strokeDasharray   = '94';
-          battery.style.strokeDashoffset  = '0';
-        }, 3000);
-      }, 1000);
-    }, 1000);
-  }, 1500);
-}, 50);
+    // these are all DomElements reference
+var border;
+var borderLight;
+var speedText;
+var speed;
+var battery;
+var speedBack;
+var display;
+var batteryBack;
+var background;
+var light;
+var drsLight;
+var rollBarLight;
+var glvLight;
+// group of DomElements that need to be Animated
+var toAnimOpacity;
+var toAnim1;
+// to delay one Timeout from another with an amount shown next to the "totDelay +=".
+var totDelay = 0;
+// initialize variables and status
+setTimeout(function () {
+    function get(id) {
+        return document.getElementById(id);
+    }
+    // Set DomElement reference
+    var border = get('path210-3-3'), borderLight = get('path4569'), speedText = get('tspan6417'), speed = get('path4814-3-5-5-6'), battery = get('path5209'), speedBack = get('layer1'), display = get('layer5'), batteryBack = get('layer6'), background = get('layer12'), light = get('layer16'), drsLight = get('path4487-3-56-0'), rollBarLight = get('path4493-3-6-2'), glvLight = get('path4487-3-5-5-9');
+    toAnimOpacity = [speedBack, display, batteryBack, background, light, borderLight];
+    // The second element of the inner Array is the Css Animation name
+    toAnim1 = [
+        [speed, 'speed'],
+        [battery, 'battery'],
+        [drsLight, 'drs'],
+        [rollBarLight, 'rollBar'],
+        [glvLight, 'glv']
+    ];
+    border.style.animationName = 'start1';
+    speedText.innerHTML = '0';
+}, totDelay += 50);
+// Set an animation to the "toAnimOpacity" group
+setTimeout(function () {
+    toAnimOpacity.forEach(function (el) { el.style.animationName = 'start-opacity'; });
+}, totDelay += 1500);
+// Set Opacity to the "toAnimOpacity" group
+setTimeout(function () {
+    toAnimOpacity.forEach(function (el) { el.style.opacity = '1'; });
+}, totDelay += 1000);
+// Set animation
+setTimeout(function () {
+    toAnim1.forEach(function (t) { t[0].style.animationName = t[1]; });
+}, totDelay += 1000);
+setTimeout(function () {
+    console.log(speed);
+    speed.style.strokeDasharray = '364';
+    speed.style.strokeDashoffset = '364';
+    battery.style.strokeDasharray = '94';
+    battery.style.strokeDashoffset = '0';
+}, totDelay += 3000);
 
   </script>
   <script>
@@ -8417,22 +8423,19 @@ return /******/ (function(modules) { // webpackBootstrap
   var socket = io('http://127.0.0.1:8127/');
 
   socket.on('state', function(data) {
-
     console.log(data);
-    if (oldState.accelerator < data.accelerator) {
-      animationAccelerator(data.accelerator);
-    } else {
-      animationBrake(data.brake);
-    }
-
+    animationAccelerator(data.accelerator);
+  });
+  socket.on('alert', function(data) {
+    console.log(data)
     drs(data.drs);
     rollBar(data.rollBar);
     glv(data.glv);
   });
 
   function animationAccelerator(accelerator) {
-    let speed2Graph = -map(accelerator, 0, 1023, -364, 0),
-        speed2Text  = parseInt(map(accelerator, 0, 1023, 0, 130));
+    let speed2Graph = -map(accelerator, 0, 535, -364, 0),
+        speed2Text  = parseInt(map(accelerator, 0, 535, 0, 130));
 
     speed.style.strokeDashoffset = speed2Graph;
     speedText.innerHTML          = speed2Text;
@@ -8489,7 +8492,7 @@ return /******/ (function(modules) { // webpackBootstrap
 // speedText.innerHTML = parseInt(map(state.out, 0, 800, 0, 130));
 
   </script>
-</head>   
+</head>
 <body>
   <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->

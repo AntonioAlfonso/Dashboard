@@ -67,7 +67,7 @@ setTimeout(() => {
 }, totDelay += 1500);
 
 
-
+ 
 // Set Opacity to the "toAnimOpacity" group
 setTimeout(() => {
   toAnimOpacity.forEach((el: HTMLElement) => { el.style.opacity = '1' });

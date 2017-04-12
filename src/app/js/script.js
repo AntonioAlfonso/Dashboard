@@ -16,22 +16,19 @@ setTimeout(function() {
   var socket = io('http://127.0.0.1:8127/');
 
   socket.on('state', function(data) {
-
     console.log(data);
-    if (oldState.accelerator < data.accelerator) {
-      animationAccelerator(data.accelerator);
-    } else {
-      animationBrake(data.brake);
-    }
-
+    animationAccelerator(data.accelerator);
+  });
+  socket.on('alert', function(data) {
+    console.log(data)
     drs(data.drs);
     rollBar(data.rollBar);
     glv(data.glv);
   });
 
   function animationAccelerator(accelerator) {
-    let speed2Graph = -map(accelerator, 0, 1023, -364, 0),
-        speed2Text  = parseInt(map(accelerator, 0, 1023, 0, 130));
+    let speed2Graph = -map(accelerator, 0, 535, -364, 0),
+        speed2Text  = parseInt(map(accelerator, 0, 535, 0, 130));
 
     speed.style.strokeDashoffset = speed2Graph;
     speedText.innerHTML          = speed2Text;
@@ -77,12 +74,12 @@ setTimeout(function() {
   }
 }, 7000);
 
-// function speedOut(accelerator, out) {
-//   return ((0.09048 * (out)) + (0.09516 * accelerator))
-// }
-// state.speed = speedOut(state.in, state.out);
-// state.in = data.accelerator;
-// state.out = state.speed;
-//
-// speed.style.strokeDashoffset = -map(state.out, 0, 800, -364, 0);
-// speedText.innerHTML = parseInt(map(state.out, 0, 800, 0, 130));
+function speedOut(accelerator, out) {
+  return ((0.09048 * (out)) + (0.09516 * accelerator))
+}
+state.speed = speedOut(state.in, state.out);
+state.in = data.accelerator;
+state.out = state.speed;
+
+speed.style.strokeDashoffset = -map(state.out, 0, 800, -364, 0);
+speedText.innerHTML = parseInt(map(state.out, 0, 800, 0, 130));
